@@ -2,13 +2,24 @@
 
 <html>
 
+<script>
+    osql.requireLogin();//すべてのページに入れる．google認証をして，osql.connect()や，osql.getMe()を使えるようにしてくれる．
+    function button1Pressed() {
+            ;
+        }
+
+</script>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 
 <body>
-    <h1>なににしようか</h1>
-
+    <h1>なににしようか</h1> 
+    <h2>前の人に続けて物語を作ってね</h2>
+    <hr>
+    次の1文:<input id="tf1" type="text">
+    <button onclick="button1Pressed()">回答</button>
 </body>
 
 </html>
