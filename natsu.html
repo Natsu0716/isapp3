@@ -11,6 +11,11 @@
     function button2Pressed() {
             name();
         }
+    
+    function button3Pressed() {
+            table();
+        }
+
 
     async function story(){
         var se = document.getElementById('tf1').value;
@@ -26,6 +31,14 @@
         var objects = await osql.connect(sql);
     }
 
+    async function table(){
+        var sql = `create table Table1(id serial, name text, kaitou text)`;
+        var objects = await osql.connect(sql);
+
+        document.getElementById('result0').innerHTML = html;
+        
+    }
+
 </script>
 
 <head>
@@ -36,7 +49,7 @@
     <h1>物語連想ゲーム</h1> 
     <h2>前の人に続けて物語を作ってね</h2>
     <hr>
-    ①ルームを作成してゲームを始めよう！:<input id="tf3" type="text">
+    ①ルームを作成してゲームを始めよう！:<button onclick="button3Pressed()">作成</button>
     <br>
     ②名前を入力してね:<input id="tf2" type="text">
     <button onclick="button2Pressed()">記名</button>
@@ -44,7 +57,10 @@
     <hr>
     次の1文:<input id="tf1" type="text">
     <button onclick="button1Pressed()">回答</button>
-    
+    <br>
+    <button onclick="button1Pressed()">表示</button>
+    <br>
+    <p id="result0"></p>
 
 
 </body>
