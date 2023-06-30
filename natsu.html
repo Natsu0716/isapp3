@@ -5,8 +5,26 @@
 <script>
     osql.requireLogin();//すべてのページに入れる．google認証をして，osql.connect()や，osql.getMe()を使えるようにしてくれる．
     function button1Pressed() {
-            ;
+            story();
         }
+
+    function button2Pressed() {
+            name();
+        }
+
+    async function story(){
+        var se = document.getElementById('tf1').value;
+
+        var sql = `select * from Tweets where tweet like "%${se}%"`;
+        var objects = await osql.connect(sql);
+    }
+
+    async function name(){
+        var na = document.getElementById('tf2').value;
+
+        var sql = `select * from Tweets where tweet like "%${na}%"`;
+        var objects = await osql.connect(sql);
+    }
 
 </script>
 
@@ -17,6 +35,12 @@
 <body>
     <h1>物語連想ゲーム</h1> 
     <h2>前の人に続けて物語を作ってね</h2>
+    <hr>
+    ①ルームを作成してゲームを始めよう！:<input id="tf3" type="text">
+    <br>
+    ②名前を入力してね:<input id="tf2" type="text">
+    <button onclick="button2Pressed()">記名</button>
+    <br>
     <hr>
     次の1文:<input id="tf1" type="text">
     <button onclick="button1Pressed()">回答</button>
