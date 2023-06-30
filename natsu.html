@@ -15,24 +15,34 @@
     function button3Pressed() {
             table();
         }
+    
+    function button4Pressed() {
+            select();
+        }
 
 
     async function story(){
         var se = document.getElementById('tf1').value;
 
-        var sql = `select * from Tweets where tweet like "%${se}%"`;
+        var sql = `insert into Table1(id, kaitou) values(1, "%${se}%")`;
         var objects = await osql.connect(sql);
     }
 
     async function name(){
         var na = document.getElementById('tf2').value;
 
-        var sql = `select * from Tweets where tweet like "%${na}%"`;
+        var sql = `insert into Table1(name) values("%${na}%")`;
         var objects = await osql.connect(sql);
     }
 
     async function table(){
         var sql = `create table Table1(id serial, name text, kaitou text)`;
+        var objects = await osql.connect(sql);
+
+    }
+
+    async function select(){
+        var sql = `select*from Table1`;
         var objects = await osql.connect(sql);
 
         document.getElementById('result0').innerHTML = html;
@@ -58,7 +68,7 @@
     次の1文:<input id="tf1" type="text">
     <button onclick="button1Pressed()">回答</button>
     <br>
-    <button onclick="button1Pressed()">表示</button>
+    <button onclick="button4Pressed()">表示</button>
     <br>
     <p id="result0"></p>
 
