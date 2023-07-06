@@ -57,22 +57,78 @@
             document.getElementById('comments').innerHTML = html;
         }
 
+        function button1Pressed() {
+            story();
+        }
+
+    function button2Pressed() {
+            name();
+        }
+    
+    function button4Pressed() {
+            select();
+        }
+
+
+    async function story(){
+        var se = document.getElementById('tf1').value;
+        var na = document.getElementById('tf2').value;
+
+        var sql = `insert into Game(pname,story) values("${na}","${se}")`;
+        var objects = await osql.connect(sql);
+    }
+
+    async function name(){
+        var na = document.getElementById('tf2').value;
+
+        var sql = `insert into Game(pname) values("${na}")`;
+        var objects = await osql.connect(sql);
+    }
+
+    async function select(){
+        var sql = `select*from Game`;
+        var objects = await osql.connect(sql);
+        var html = '';
+            html = html + '<ul>';
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                html = html + '<li>' + object.pid + ',' + object.pname + ',' + object.story +'</li>';
+            }
+            html = html + '</ul>';
+
+        document.getElementById('result0').innerHTML = html;
+        
+    }
     </script>
 
 </head>
 
 <body>
-    <h1>talkroom <span id="roomname"></span></h1>
+    <h1><span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
     </div>
     <hr>
+    名前を入力してね:<input id="tf2" type="text">
+    <br>
+    <button onclick="button2Pressed()">記名</button>
+    <br>
+    <hr>
+    次の1文:<input id="tf1" type="text">
+    <button onclick="button1Pressed()">回答</button>
+    <br>
+    <button onclick="button4Pressed()">表示</button>
+    <p id="result0"></p>
+    <br>
+    <br>
+
+    <hr>
+    コメント
     <div>
         <input id="comment" type="text">
         <button onclick="newComment()">new comment</button>
     </div>
-    <br>
     <div id="comments"></div>
 </body>
 

@@ -8,10 +8,37 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
 
+    <style>
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .room-table {
+            border: 1px solid black;
+            margin-top: 60px;
+        }
+
+        .room-table th,
+        .room-table td {
+            padding: 10px;
+        }
+    </style>
+
     <script>
         osql.requireLogin();
 
         var me;
+
+        var roomNames = [
+            "ルーム1",
+            "ルーム2",
+            "ルーム3",
+            "ルーム4"
+        ];
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -22,9 +49,9 @@
             setInterval(refreshRooms, 2000);
         });
 
-        async function createRoom() {
+        async function SelectRoom() {
             var name = document.getElementById('roomname').value;
-            var sql = `insert into Rooms (name) values('${name}');`;
+            var sql = `select into Rooms (name) values('${name}');`;
             var roomId = await osql.connectInsert(sql);
             console.log(roomId);
 
@@ -54,18 +81,51 @@
 </head>
 
 <body>
-    <h1>robby</h1>
+    <h1>ルーム選択</h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
     </div>
-    <hr>
+    <div style="text-align: center;">
+    <h1>物語連想ゲーム</h1> 
+    <h2>前の人に続けて物語を作ってね</h2>
+    <hr margin-top = 50px>
+    ＜ルームを選択してゲームを始めよう！＞
+    <br>
+   </div>
     <div>
-        <h2>create room</h2>
-        <input id="roomname" type="text">
-        <button onclick="createRoom()">new room</button>
+        <h2>Select room</h2>
+        <div class="center">
+            <div id="rooms">
+                <table class="room-table">
+                    <tr>
+                        <th>ルーム名</th>
+                        <th>参加人数</th>
+                        <th>入室状況</th>
+                    </tr>
+                    <tr id="room-1">
+                        <td>・ルーム1</td>
+                        <td class="num-users"></td>
+                        <td class="status"></td>
+                    </tr>
+                    <tr id="room-2">
+                        <td>・ルーム2</td>
+                        <td class="num-users"></td>
+                        <td class="status"></td>
+                    </tr>
+                    <tr id="room-3">
+                        <td>・ルーム3</td>
+                        <td class="num-users"></td>
+                        <td class="status"></td>
+                    </tr>
+                    <tr id="room-4">
+                        <td>・ルーム4</td>
+                        <td class="num-users"></td>
+                        <td class="status"></td>
+                    </tr>
+                </table>
+            </div>
     </div>
-    <h2>rooms</h2>
     <div id="rooms"></div>
 </body>
 
