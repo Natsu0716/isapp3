@@ -86,7 +86,8 @@
     }
 
     async function select(){
-        var sql = `select*from Game`;
+        var id =sessionStorage.getItem('rid');
+        var sql = `select*from Game`+ id;
         var objects = await osql.connect(sql);
         var html = '';
             html = html + '<ul>';
