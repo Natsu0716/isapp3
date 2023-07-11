@@ -40,23 +40,46 @@
             "ルーム4"
         ];
 
-        $(document).ready(async function () {
-            me = await osql.getMe();
-            document.getElementById('firstname').innerHTML = me.fname;
-            document.getElementById('lastname').innerHTML = me.lname;
+        function button1Pressed() {
+            selectname();
+    }
 
-            await refreshRooms();
-            setInterval(refreshRooms, 2000);
-        });
+    function button5Pressed() {
+            table();
+    }
 
-        async function SelectRoom() {
-            var name = document.getElementById('roomname').value;
-            var sql = `select into Rooms (name) values('${name}');`;
-            var roomId = await osql.connectInsert(sql);
-            console.log(roomId);
+    $(document).ready(async function () {
+        me = await osql.getMe();
+        document.getElementById('firstname').innerHTML = me.fname;
+        document.getElementById('lastname').innerHTML = me.lname;
 
-            refreshRooms();
-        }
+        await refreshRooms();
+        setInterval(refreshRooms, 2000);
+    });
+
+    async function SelectRoom() {
+        var name = document.getElementById('roomname').value;
+        var sql = `select into Rooms (name) values('${name}');`;
+        var roomId = await osql.connectInsert(sql);
+        console.log(roomId);
+
+        refreshRooms();
+    }
+
+        async function table() {
+            var sql = `select rname from Gaames:`;
+            var objects = await osql.connect(sql);
+            var html = '';
+                html = html + '<ul>';
+                    for (var i = 0; i < objects.length; i++) {
+                        var object = objects[i];
+                        html = html + '<li>' + object.rname + '</li>';
+                    }
+                    html = html + '</ul>';
+                
+                document.getElementById('result0').innerHTML = html;
+            });
+
 
         async function refreshRooms() {
             var sql = 'select * from Rooms;';
@@ -76,6 +99,10 @@
             document.getElementById('rooms').innerHTML = html;
         }
 
+        async function selectname{
+
+        }
+
     </script>
 
 </head>
@@ -88,11 +115,19 @@
         <a href="index.html">top</a>
     </div>
     <div style="text-align: center;">
-    <h1>物語連想ゲーム</h1> 
-    <h2>前の人に続けて物語を作ってね</h2>
-    ＜ルームを選択してゲームを始めよう！＞
+        <h2>ルームを作成する</h2>
+    ＜ルームを作成>
+    ルーム名:<input id="tf" type="text">
+    <button onclick="buttonPressed()">決定</button>
     <br>
     <hr>
+    <h3>ルームを選択</h3>
+    選択したいルーム名:<input id="tf7" type="text">
+    <button onclick="button7Pressed()">決定</button>
+    <br>
+    <button onclick="button5Pressed()">タイトルを表示</button>
+    <p id="result0"></p>
+   
    </div>
     <div>
         <div class="center">
@@ -100,23 +135,21 @@
                 <table class="room-table">
                     <tr>
                         <th>ルーム名</th>
-                        <th>参加人数</th>
-                        <th>入室状況</th>
                     </tr>
                     <tr id="room-1">
                         <td><a href="room.html?rid=1">・ルーム1</td>
                         
                     </tr>
                     <tr id="room-2">
-                        <td>・ルーム2</td>
+                        <td><a href="room.html?rid=2">・ルーム2</td>
                         
                     </tr>
                     <tr id="room-3">
-                        <td>・ルーム3</td>
+                        <td><a href="room.html?rid=3">・ルーム3</td>
                         
                     </tr>
                     <tr id="room-4">
-                        <td>・ルーム4</td>
+                        <td><a href="room.html?rid=4">・ルーム4</td>
                         
                     </tr>
                 </table>

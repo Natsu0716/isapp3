@@ -57,9 +57,9 @@
             document.getElementById('comments').innerHTML = html;
         }
 
-        function button1Pressed() {
+    function button1Pressed() {
             story();
-        }
+    }
 
     function button2Pressed() {
             name();
@@ -86,8 +86,8 @@
     }
 
     async function select(){
-        var id =sessionStorage.getItem('rid');
-        var sql = `select*from Game`+ id;
+        var id = sessionStorage.getItem('rid');
+        var sql = `select*from Gaames where rname = '桃太郎'`;
         var objects = await osql.connect(sql);
         var html = '';
             html = html + '<ul>';

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <style>
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .room-table {
+            border: 1px solid black;
+            margin-top: 60px;
+        }
+
+        .room-table th,
+        .room-table td {
+            padding: 10px;
+        }
+    </style>
+
+    <script>
+        osql.requireLogin();
+
+        var me;
+
+        var roomNames = [
+            "ルーム1",
+            "ルーム2",
+            "ルーム3",
+            "ルーム4"
+        ];
+
+        function button1Pressed() {
+            selectname();
+    }
+
+        $(document).ready(async function () {
+            me = await osql.getMe();
+            document.getElementById('firstname').innerHTML = me.fname;
+            document.getElementById('lastname').innerHTML = me.lname;
+
+            await refreshRooms();
+            setInterval(refreshRooms, 2000);
+        });
+
+        async function SelectRoom() {
+            var name = document.getElementById('roomname').value;
+            var sql = `select into Rooms (name) values('${name}');`;
+            var roomId = await osql.connectInsert(sql);
+            console.log(roomId);
+
+            refreshRooms();
+        }
+
+        async function refreshRooms() {
+            var sql = 'select * from Rooms;';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<table border="1">';
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + `<td>${object.id}</td>`;
+                html = html + `<td>${object.name}</td>`;
+                html = html + `<td><a href="room.html?roomId=${object.id}">入室</a></td>`;
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('rooms').innerHTML = html;
+        }
+
+        async function selectname{
+            
+        }
+
+    </script>
+
+</head>
+
+<body>
+    <h1>ユーザー登録</h1>
+    <hr>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="index.html">top</a>
+    </div>
+    <div style="text-align: center;">
+    <h1>物語連想ゲーム</h1> 
+    <h2>前の人に続けて物語を作ってね</h2>
+    ＜名前を登録してゲームを始めよう！＞
+    <br>
+    <hr>
+    プレイヤーネーム:<input id="tf2" type="text">
+    <button onclick="button1Pressed()">決定</button>
+   </div>
+   <br>
+   <div style="text-align: center;">
+   <a href="robby.html?">ロビーへ
+   </div>
+    <div id="rooms"></div>
+</body>
+
+</html>

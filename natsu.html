@@ -24,25 +24,25 @@
     async function story(){
         var se = document.getElementById('tf1').value;
 
-        var sql = `insert into Table1(id, kaitou) values(1, "%${se}%")`;
+        var sql = `insert into Game(story) values("%${se}%")`;
         var objects = await osql.connect(sql);
     }
 
     async function name(){
         var na = document.getElementById('tf2').value;
 
-        var sql = `insert into Table1(name) values("%${na}%")`;
+        var sql = `insert into Game(pname) values("%${na}%")`;
         var objects = await osql.connect(sql);
     }
 
     async function table(){
-        var sql = `create table Table1(id serial, name text, kaitou text)`;
+        var sql = `create table Game(id serial, name text, kaitou text)`;
         var objects = await osql.connect(sql);
 
     }
 
     async function select(){
-        var sql = `select*from Table1`;
+        var sql = `select*from Game`;
         var objects = await osql.connect(sql);
 
         document.getElementById('result0').innerHTML = html;
