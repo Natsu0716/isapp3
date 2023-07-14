@@ -1,161 +1,184 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <script type="text/javascript" src="lib/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/osql.js"></script>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/osql.js"></script>
 
-    <style>
-        .center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .room-table {
-            border: 1px solid black;
-            margin-top: 60px;
-        }
-
-        .room-table th,
-        .room-table td {
-            padding: 10px;
-        }
-    </style>
-
-    <script>
-        osql.requireLogin();
-
-        var me;
-
-        var roomNames = [
-            "ルーム1",
-            "ルーム2",
-            "ルーム3",
-            "ルーム4"
-        ];
-
-        function button1Pressed() {
-            selectname();
+  <style>
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
     }
 
-    function button5Pressed() {
-            table();
+    .room-table {
+      border: 1px solid black;
+      margin-top: 60px;
     }
+
+    .room-table th,
+    .room-table td {
+      padding: 10px;
+    }
+  </style>
+
+  <script>
+    osql.requireLogin();
+
+    var me;
+
+    var roomNames = [
+      "ルーム1",
+      "ルーム2",
+      "ルーム3",
+      "ルーム4"
+    ];
 
     $(document).ready(async function () {
-        me = await osql.getMe();
-        document.getElementById('firstname').innerHTML = me.fname;
-        document.getElementById('lastname').innerHTML = me.lname;
+      me = await osql.getMe();
+      document.getElementById('firstname').innerHTML = me.fname;
+      document.getElementById('lastname').innerHTML = me.lname;
 
-        await refreshRooms();
-        setInterval(refreshRooms, 2000);
+      await refreshRooms();
+      await refreshTitles(); // タイトル一覧を表示
+
+      setInterval(refreshRooms, 2000);
     });
 
-    async function SelectRoom() {
-        var name = document.getElementById('roomname').value;
-        var sql = `select into Rooms (name) values('${name}');`;
-        var roomId = await osql.connectInsert(sql);
-        console.log(roomId);
-
-        refreshRooms();
+    async function refreshRooms() {
+      var sql = 'select * from Rooms;';
+      var objects = await osql.connect(sql);
+      console.log(objects);
+      var html = '';
+      html = html + '<table border="1">';
+      for (var i = 0; i < objects.length; i++) {
+        html = html + '<tr>';
+        var object = objects[i];
+        html = html + `<td>${object.id}</td>`;
+        html = html + `<td>${object.name}</td>`;
+        html = html + `<td><a href="room.html?roomId=${object.id}">入室</a></td>`;
+        html = html + '</tr>';
+      }
+      html = html + '</table>';
+      document.getElementById('rooms').innerHTML = html;
     }
 
-        async function table() {
-            var sql = `select rname from Gaames:`;
-            var objects = await osql.connect(sql);
-            var html = '';
-                html = html + '<ul>';
-                    for (var i = 0; i < objects.length; i++) {
-                        var object = objects[i];
-                        html = html + '<li>' + object.rname + '</li>';
-                    }
-                    html = html + '</ul>';
-                
-                document.getElementById('result0').innerHTML = html;
-            });
+    function buttonPressed() {
+      var roomName = document.getElementById('tf').value;
+      if (roomName.trim() === "") {
+        alert("ルーム名を入力してください");
+        return;
+      }
+      createRoom(roomName);
+    }
 
+    async function createRoom(roomName) {
+      var sql = `INSERT INTO Titles (title) VALUES ('${roomName}');`;
+      try {
+        await osql.connectInsert(sql);
+        alert("ルーム名がデータベースに挿入されました");
+        refreshTitles();
+      } catch (error) {
+        console.log(error);
+        alert("ルーム名の挿入中にエラーが発生しました");
+      }
+    }
 
-        async function refreshRooms() {
-            var sql = 'select * from Rooms;';
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = '';
-            html = html + '<table border="1">';
-            for (var i = 0; i < objects.length; i++) {
-                html = html + '<tr>';
-                var object = objects[i];
-                html = html + `<td>${object.id}</td>`;
-                html = html + `<td>${object.name}</td>`;
-                html = html + `<td><a href="room.html?roomId=${object.id}">入室</a></td>`;
-                html = html + '</tr>';
-            }
-            html = html + '</table>';
-            document.getElementById('rooms').innerHTML = html;
+    async function refreshTitles() {
+      var sql = 'SELECT * FROM Titles;';
+      try {
+        var titles = await osql.connect(sql);
+        var html = '<ul>';
+        for (var i = 0; i < titles.length; i++) {
+          var title = titles[i];
+          html += '<li>' + title.title + '</li>';
         }
+        html += '</ul>';
+        document.getElementById('titleList').innerHTML = html;
+      } catch (error) {
+        console.log(error);
+        alert("タイトルの取得中にエラーが発生しました");
+      }
+    }
 
-        async function selectname{
-
+    function button7Pressed() {
+      var title = document.getElementById('tf7').value;
+      if (title.trim() === "") {
+        alert("タイトルが選択されていません");
+        return;
+      }
+      var found = false;
+      var titles = document.querySelectorAll("#titleList li");
+      for (var i = 0; i < titles.length; i++) {
+        if (titles[i].innerText === title) {
+          found = true;
+          break;
         }
+      }
+      if (found) {
+        var roomId = getRoomIdByTitle(title);
+        if (roomId) {
+          window.location.href = `room.html?roomId=${roomId}&title=${encodeURIComponent(title)}`;
+        } else {
+          alert("存在しないルームです");
+        }
+      } else {
+        alert("存在しないタイトルです");
+      }
+    }
 
-    </script>
+    function getRoomIdByTitle(title) {
+      // ルームIDをタイトルから取得するロジックを実装する必要があります
+      // ここではダミーデータのルームIDを返す例を示します
+      if (title === "ルーム1") {
+        return 1;
+      } else if (title === "ルーム2") {
+        return 2;
+      } else if (title === "ルーム3") {
+        return 3;
+      } else if (title === "ルーム4") {
+        return 4;
+      }
+      return null;
+    }
+  </script>
 
 </head>
 
 <body>
-    <h1>ルーム選択</h1>
-    <hr>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="index.html">top</a>
-    </div>
-    <div style="text-align: center;">
-        <h2>ルームを作成する</h2>
+  <h1>ルーム選択</h1>
+  <hr>
+  <div style="text-align: right;">
+    ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+    <a href="index.html">top</a>
+  </div>
+  <div style="text-align: center;">
+    <h2>ルームを作成する</h2>
     ＜ルームを作成>
     ルーム名:<input id="tf" type="text">
     <button onclick="buttonPressed()">決定</button>
     <br>
     <hr>
     <h3>ルームを選択</h3>
-    選択したいルーム名:<input id="tf7" type="text">
+    選択したいタイトル:<input id="tf7" type="text">
     <button onclick="button7Pressed()">決定</button>
     <br>
     <button onclick="button5Pressed()">タイトルを表示</button>
     <p id="result0"></p>
-   
-   </div>
-    <div>
-        <div class="center">
-            
-                <table class="room-table">
-                    <tr>
-                        <th>ルーム名</th>
-                    </tr>
-                    <tr id="room-1">
-                        <td><a href="room.html?rid=1">・ルーム1</td>
-                        
-                    </tr>
-                    <tr id="room-2">
-                        <td><a href="room.html?rid=2">・ルーム2</td>
-                        
-                    </tr>
-                    <tr id="room-3">
-                        <td><a href="room.html?rid=3">・ルーム3</td>
-                        
-                    </tr>
-                    <tr id="room-4">
-                        <td><a href="room.html?rid=4">・ルーム4</td>
-                        
-                    </tr>
-                </table>
-            
-    </div>
+  </div>
+  <div>
     <div id="rooms"></div>
+    <div>
+    <div class="center">
+      <h3>タイトル一覧</h3>
+      <div id="titleList"></div>
+    </div>
+  </div>
 </body>
 
 </html>
