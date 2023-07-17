@@ -56,6 +56,22 @@
             html = html + '</table>';
             document.getElementById('comments').innerHTML = html;
         }
+
+        function button1Pressed() {
+            var story = document.getElementById('tf1').value;
+            if (story.trim() === "") {
+                alert("ストーリーが入力されていません");
+                return;
+            }
+
+            var sql = `insert into PGame (story, title) values ('${story}', '${title}');`;
+            osql.connectInsert(sql).then(function () {
+                alert("ストーリーが挿入されました");
+            }).catch(function (error) {
+                console.log(error);
+                alert("ストーリーの挿入中にエラーが発生しました");
+            });
+        }
     </script>
 </head>
 
