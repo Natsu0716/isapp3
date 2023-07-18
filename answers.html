@@ -41,6 +41,36 @@
                 alert("データの取得中にエラーが発生しました");
             }
         }
+
+        async function saveStory() {
+            var confirmResult = confirm("本当によろしいですか？");
+            if (confirmResult) {
+                var sqlDeleteTitles = `DELETE FROM Titles WHERE title = '${title}';`;
+                var sqlDeletePGame = `DELETE FROM PGame WHERE title = '${title}';`;
+
+                try {
+                    await osql.connect(sqlDeleteTitles);
+                    await osql.connect(sqlDeletePGame);
+                    alert("タイトルと物語が削除されました");
+                } catch (error) {
+                    console.log(error);
+                    alert("削除中にエラーが発生しました");
+                }
+
+                var story = document.getElementById('results').innerHTML;
+                var encodedStory = encodeURIComponent(story).replace(/'/g, "%27").replace(/"/g, "%22");
+                var sqlInsert = `INSERT INTO past (title, story) VALUES ('${title}', '${encodedStory}');`;
+                try {
+                    await osql.connect(sqlInsert);
+                    alert("物語が保存されました");
+                } catch (error) {
+                    console.log(error);
+                    alert("物語の保存中にエラーが発生しました");
+                }
+
+                window.location.href = "robby.html";
+            }
+        }
     </script>
 </head>
 
@@ -53,6 +83,9 @@
     <div class="center">
         <h3>結果一覧</h3>
         <div id="results"></div>
+    </div>
+    <div class="center">
+        <button onclick="saveStory()">ゲーム終了し物語を保存する</button>
     </div>
 </body>
 
