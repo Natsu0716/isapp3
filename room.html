@@ -13,6 +13,7 @@
         var me;
         var roomId = osql.getParam('roomId');
         var title = decodeURIComponent(osql.getParam('title'));
+        var username = decodeURIComponent(osql.getParam('username'));
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -23,10 +24,11 @@
             var objects = await osql.connect(sql);
 
             var room = objects[0];
-            document.getElementById('roomname').innerHTML = title;
+            document.getElementById('roomname').innerHTML = title || "";
 
             await refreshComments();
             setInterval(refreshComments, 2000);
+            setInterval(button2Pressed, 1000); // 追加
         });
 
         async function newComment() {
@@ -59,12 +61,13 @@
 
         function button1Pressed() {
             var story = document.getElementById('tf1').value;
+
             if (story.trim() === "") {
                 alert("ストーリーが入力されていません");
                 return;
             }
 
-            var sql = `insert into PGame (story, title) values ('${story}', '${title}');`;
+            var sql = `insert into PGame (name, story, title) values ('${username}','${story}', '${title || ""}');`;
             osql.connectInsert(sql).then(function () {
                 alert("ストーリーが挿入されました");
             }).catch(function (error) {
@@ -72,11 +75,29 @@
                 alert("ストーリーの挿入中にエラーが発生しました");
             });
         }
+
+        function button2Pressed() {
+            var sql = `select * from PGame where title = '${title || ""}';`;
+            osql.connect(sql).then(function (objects) {
+                var html = '';
+                html = html + '<ul>';
+                for (var i = 0; i < objects.length; i++) {
+                    var object = objects[i];
+                    html = html + '<li>' + object.name + ' , '+ object.story + '</li>';
+                }
+                html = html + '</ul>';
+                document.getElementById('result0').innerHTML = html;
+            }).catch(function (error) {
+                console.log(error);
+                alert("データの取得中にエラーが発生しました");
+            });
+        }
     </script>
 </head>
 
 <body>
     <h1><span id="roomname"></span></h1>
+    前の人に続いてストーリーを考えよう！
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
@@ -84,8 +105,6 @@
     <hr>
     次の1文:<input id="tf1" type="text">
     <button onclick="button1Pressed()">回答</button>
-    <br>
-    <button onclick="button4Pressed()">表示</button>
     <p id="result0"></p>
     <br>
     <br>

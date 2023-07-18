@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -32,18 +31,6 @@
         osql.requireLogin();
 
         var me;
-
-        var roomNames = [
-            "ルーム1",
-            "ルーム2",
-            "ルーム3",
-            "ルーム4"
-        ];
-
-        function button1Pressed() {
-            selectname();
-    }
-
         $(document).ready(async function () {
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
@@ -52,6 +39,15 @@
             await refreshRooms();
             setInterval(refreshRooms, 2000);
         });
+
+        function button1Pressed() {
+            var username = document.getElementById('tf2').value;
+            if (username.trim() === "") {
+                alert("プレイヤーネームを入力してください");
+                return;
+            }
+            window.location.href = "robby.html?Username=" + encodeURIComponent(username);
+        }
 
         async function SelectRoom() {
             var name = document.getElementById('roomname').value;
@@ -80,8 +76,8 @@
             document.getElementById('rooms').innerHTML = html;
         }
 
-        async function selectname{
-            
+        async function selectname() {
+
         }
 
     </script>
@@ -102,13 +98,12 @@
     <br>
     <hr>
     プレイヤーネーム:<input id="tf2" type="text">
-    <button onclick="button1Pressed()">決定</button>
+    <button onclick="button1Pressed()">次へ</button>
    </div>
    <br>
    <div style="text-align: center;">
-   <a href="robby.html?">ロビーへ
    </div>
-    <div id="rooms"></div>
+   
 </body>
 
 </html>
