@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <style>
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+    </style>
+    <script>
+        osql.requireLogin();
+
+        var title = decodeURIComponent(osql.getParam('title'));
+
+        $(document).ready(function () {
+            document.title = title || "Results";
+            document.getElementById('pageTitle').innerHTML = title || "Results";
+            displayResults();
+        });
+
+        async function displayResults() {
+            var sql = `SELECT * FROM PGame WHERE title = '${title}';`;
+            try {
+                var results = await osql.connect(sql);
+                var html = '<ul>';
+                for (var i = 0; i < results.length; i++) {
+                    var result = results[i];
+                    html += '<li>' + result.story + '</li>';
+                }
+                html += '</ul>';
+                document.getElementById('results').innerHTML = html;
+            } catch (error) {
+                console.log(error);
+                alert("データの取得中にエラーが発生しました");
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1 class="center" id="pageTitle"></h1>
+    <div style="text-align: right;">
+        <a href="index.html">top</a>
+    </div>
+    <hr>
+    <div class="center">
+        <h3>結果一覧</h3>
+        <div id="results"></div>
+    </div>
+</body>
+
+</html>

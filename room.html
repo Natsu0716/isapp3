@@ -92,6 +92,11 @@
                 alert("データの取得中にエラーが発生しました");
             });
         }
+
+        function showResults() {
+            var url = `answers.html?title=${encodeURIComponent(title || "")}`;
+            window.location.href = url;
+        }
     </script>
 </head>
 
@@ -116,6 +121,8 @@
         <button onclick="newComment()">new comment</button>
     </div>
     <div id="comments"></div>
+
+    <button onclick="showResults()">結果</button>
 </body>
 
 </html>
