@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
 
 <head>
@@ -8,6 +8,27 @@
     <script type="text/javascript" src="lib/osql.js"></script>
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 24px;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #ccc;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
         .center {
             display: flex;
             justify-content: center;
@@ -16,14 +37,53 @@
             text-align: center;
         }
 
-        .room-table {
-            border: 1px solid black;
-            margin-top: 60px;
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
         }
 
-        .room-table th,
-        .room-table td {
+        .form-container h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .form-container input[type="text"] {
+            width: 100%;
             padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        .form-container a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
         }
     </style>
 
@@ -85,25 +145,28 @@
 </head>
 
 <body>
-    <h1>ユーザー登録</h1>
-    <hr>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="index.html">top</a>
+    <div class="center">
+        <div class="form-container">
+            <h2>ユーザー登録</h2>
+            <hr>
+            <div style="text-align: right;">
+                ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+                <a href="index.html">top</a>
+            </div>
+            <div style="text-align: center;">
+                <h1>物語連想ゲーム</h1>
+                <h2>前の人に続けて物語を作ってね</h2>
+                <p>＜名前を登録してゲームを始めよう！＞</p>
+                <br>
+                <hr>
+                <input id="tf2" type="text" placeholder="プレイヤーネーム">
+                <button onclick="button1Pressed()">次へ</button>
+            </div>
+            <br>
+            <div style="text-align: center;">
+            </div>
+        </div>
     </div>
-    <div style="text-align: center;">
-    <h1>物語連想ゲーム</h1> 
-    <h2>前の人に続けて物語を作ってね</h2>
-    ＜名前を登録してゲームを始めよう！＞
-    <br>
-    <hr>
-    プレイヤーネーム:<input id="tf2" type="text">
-    <button onclick="button1Pressed()">次へ</button>
-   </div>
-   <br>
-   <div style="text-align: center;">
-   </div>
-   
 </body>
 
 </html>

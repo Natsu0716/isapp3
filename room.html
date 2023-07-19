@@ -7,6 +7,142 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 24px;
+        }
+
+        hr {
+            border: none;
+            height: 5px;
+            background-color: #ccc;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* ヘッダー */
+        div[style="text-align: right;"] {
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        /* ストーリー入力フォーム */
+        input#tf1 {
+            width: 300px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* 結果ボタン */
+        button:last-of-type {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background-color: #2196f3;
+        }
+
+        /* 結果リスト */
+        p#result0 {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        p#result0 ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        p#result0 li {
+            margin-bottom: 10px;
+        }
+
+        /* コメント入力フォーム */
+        div > input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* コメント一覧 */
+        div#comments {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        div#comments table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        div#comments table td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* 結果ボタン */
+        button:last-of-type {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background-color: #2196f3;
+        }
+
+        /* ユーザー名一覧 */
+        div#usernames {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        div#usernames table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        div#usernames table td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+
     <script>
         osql.requireLogin();
 
@@ -29,8 +165,42 @@
             await refreshComments();
             setInterval(refreshComments, 2000);
             setInterval(button2Pressed, 1000); // 追加
+
+            initializePage();
         });
 
+        async function initializePage() {
+            // URLパラメータのUsernameとtitleをUsersテーブルのnameカラムとtitleカラムにインサート
+            var insertUserInfoSql = `INSERT INTO Users (name, title) VALUES ('${username}', '${title || ""}');`;
+            try {
+                await osql.connect(insertUserInfoSql);
+                setInterval(displayUserNames, 1000); // 1秒ごとにtitleに一致するユーザー名を表示
+            } catch (error) {
+                console.log(error);
+                alert("データの取得中にエラーが発生しました");
+            }
+        }
+
+        async function displayUserNames() {
+            var sql = `SELECT name FROM Users WHERE title = '${title || ""}';`;
+            try {
+                var objects = await osql.connect(sql);
+                var html = '';
+                html += '<table border="1">';
+                for (var i = 0; i < objects.length; i++) {
+                    html += '<tr>';
+                    var object = objects[i];
+                    html += `<td>${object.name}</td>`;
+                    html += '</tr>';
+                }
+                html += '</table>';
+                document.getElementById('usernames').innerHTML = html;
+            } catch (error) {
+                console.log(error);
+                alert("データの取得中にエラーが発生しました");
+            }
+        }
+        
         async function newComment() {
             var name = document.getElementById('comment').value;
             var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${name}', now());`;
@@ -115,7 +285,7 @@
     <h1><span id="roomname"></span></h1>
     前の人に続いてストーリーを考えよう！
     <br>
-    15個のストーリーで完結させよう！
+    15個のストーリーで完結させよう！ プレイヤー表の上から順番に回答してね！
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
@@ -136,6 +306,10 @@
     <div id="comments"></div>
 
     <button onclick="showResults()">結果</button>
+    <hr>
+    <h3>ユーザー名一覧</h3>
+    <div id="usernames"></div>
+
 </body>
 
 </html>
