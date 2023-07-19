@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/osql.js"></script>
+  <style>
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+  </style>
+  <script>
+    osql.requireLogin();
+
+    var title = decodeURIComponent(osql.getParam('title'));
+    var username = decodeURIComponent(osql.getParam('Username'));
+
+    $(document).ready(function () {
+      loadPastStory(title);
+    });
+
+    async function loadPastStory(title) {
+      var sql = `SELECT * FROM past WHERE title = '${title}';`;
+      try {
+        var result = await osql.connect(sql);
+        if (result.length > 0) {
+          document.title = result[0].title;
+          document.getElementById('pastTitle').innerHTML = result[0].title;
+          document.getElementById('pastStory').innerHTML = result[0].story;
+        } else {
+          alert("該当する過去の物語が見つかりませんでした");
+        }
+      } catch (error) {
+        console.log(error);
+        alert("過去の物語の取得中にエラーが発生しました");
+      }
+    }
+
+    function SVV() {
+      window.location.href = `robby.html?Username=${encodeURIComponent(username)}`;
+    }
+  </script>
+</head>
+
+<body>
+  <div class="center">
+    <h1 id="pastTitle"></h1>
+    <div id="pastStory"></div>
+    <div style="text-align: right; position: absolute; bottom: 10px; right: 10px;">
+      <button onclick="SVV()">robbyに戻る</button>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -74,6 +74,17 @@
                 console.log(error);
                 alert("ストーリーの挿入中にエラーが発生しました");
             });
+
+            var sqlCount = `select count(*) as count from PGame where title = '${title || ""}';`;
+            osql.connect(sqlCount).then(function (results) {
+                var count = results[0].count;
+                if (count > 14) {
+                    showResults();
+                }
+            }).catch(function (error) {
+                console.log(error);
+                alert("データの取得中にエラーが発生しました");
+            });
         }
 
         function button2Pressed() {
@@ -83,7 +94,7 @@
                 html = html + '<ul>';
                 for (var i = 0; i < objects.length; i++) {
                     var object = objects[i];
-                    html = html + '<li>' + object.name + ' , '+ object.story + '</li>';
+                    html = html + '<li>' + object.name + ' , ' + object.story + '</li>';
                 }
                 html = html + '</ul>';
                 document.getElementById('result0').innerHTML = html;
@@ -103,6 +114,8 @@
 <body>
     <h1><span id="roomname"></span></h1>
     前の人に続いてストーリーを考えよう！
+    <br>
+    15個のストーリーで完結させよう！
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>

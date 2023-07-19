@@ -3,10 +3,8 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
   <script type="text/javascript" src="lib/jquery.min.js"></script>
   <script type="text/javascript" src="lib/osql.js"></script>
-
   <style>
     .center {
       display: flex;
@@ -15,12 +13,11 @@
       flex-direction: column;
       text-align: center;
     }
-
   </style>
-
   <script>
     osql.requireLogin();
-
+    var title = decodeURIComponent(osql.getParam('title'));
+    var username = decodeURIComponent(osql.getParam('Username'));
     var me;
 
     $(document).ready(async function () {
@@ -31,6 +28,7 @@
       refreshTitles(); // 初回のタイトル一覧の表示
 
       setInterval(refreshTitles, 2000); // 2秒ごとにタイトル一覧を更新
+      loadPastTitles(); // 過去の物語一覧の表示
     });
 
     async function buttonPressed() {
@@ -108,8 +106,28 @@
       }
       return null;
     }
-  </script>
 
+    function loadPastTitles() {
+      var sql = 'SELECT * FROM past;';
+      try {
+        osql.connect(sql).then(function (result) {
+          var html = '<ul>';
+          for (var i = 0; i < result.length; i++) {
+            var pastTitle = result[i].title;
+            html += '<li><a href="past.html?title=' + encodeURIComponent(pastTitle) + '&Username=' + encodeURIComponent(username) + '">' + pastTitle + '</a></li>';
+          }
+          html += '</ul>';
+          document.getElementById('pastTitleList').innerHTML = html;
+        }).catch(function (error) {
+          console.log(error);
+          alert("過去の物語一覧の取得中にエラーが発生しました");
+        });
+      } catch (error) {
+        console.log(error);
+        alert("過去の物語一覧の取得中にエラーが発生しました");
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -132,6 +150,11 @@
     <div class="center">
       <h3>タイトル一覧</h3>
       <div id="titleList"></div>
+    </div>
+    <hr>
+    <div class="center">
+      <h3>過去の物語一覧</h3>
+      <div id="pastTitleList"></div>
     </div>
   </div>
 </body>

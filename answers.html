@@ -45,30 +45,50 @@
         async function saveStory() {
             var confirmResult = confirm("本当によろしいですか？");
             if (confirmResult) {
-                var sqlDeleteTitles = `DELETE FROM Titles WHERE title = '${title}';`;
+                var storyList = document.getElementById('results').getElementsByTagName('li');
+                var story = "";
+                for (var i = 0; i < storyList.length; i++) {
+                    story += storyList[i].innerHTML + "<br>";
+                }
+                var insertSQL = `INSERT INTO past (title, story) VALUES ('${title}', '${story}');`;
+                var deleteSQL = `DELETE FROM PGame WHERE title = '${title}';`;
+                osql.connect(insertSQL)
+                    .then(function () {
+                        osql.connect(deleteSQL)
+                            .then(function () {
+                                alert("物語が保存されました");
+                                // ページ遷移などの処理を行う場合はここに記述
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                alert("物語の削除中にエラーが発生しました");
+                            });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        alert("物語の保存中にエラーが発生しました");
+                    });
+            } 
+         }
+
+        function deletestory() {
+            var confirmResult = confirm("本当によろしいですか？");
+            if (confirmResult) {
                 var sqlDeletePGame = `DELETE FROM PGame WHERE title = '${title}';`;
+                var sqlDeleteTitles = `DELETE FROM Titles WHERE title = '${title}';`;
 
-                try {
-                    await osql.connect(sqlDeleteTitles);
-                    await osql.connect(sqlDeletePGame);
-                    alert("タイトルと物語が削除されました");
-                } catch (error) {
+                osql.connect(sqlDeletePGame).then(function () {
+                    osql.connect(sqlDeleteTitles).then(function () {
+                        alert("めでたしめでたし？");
+                        window.location.href = "robby.html";
+                    }).catch(function (error) {
+                        console.log(error);
+                        alert("タイトルの削除中にエラーが発生しました");
+                    });
+                }).catch(function (error) {
                     console.log(error);
-                    alert("削除中にエラーが発生しました");
-                }
-
-                var story = document.getElementById('results').innerHTML;
-                var encodedStory = encodeURIComponent(story).replace(/'/g, "%27").replace(/"/g, "%22");
-                var sqlInsert = `INSERT INTO past (title, story) VALUES ('${title}', '${encodedStory}');`;
-                try {
-                    await osql.connect(sqlInsert);
-                    alert("物語が保存されました");
-                } catch (error) {
-                    console.log(error);
-                    alert("物語の保存中にエラーが発生しました");
-                }
-
-                window.location.href = "robby.html";
+                    alert("物語の削除中にエラーが発生しました");
+                });
             }
         }
     </script>
@@ -85,8 +105,19 @@
         <div id="results"></div>
     </div>
     <div class="center">
-        <button onclick="saveStory()">ゲーム終了し物語を保存する</button>
+        <button onclick="saveStory()">物語を「過去の物語」に保存する</button>
+        <br>
+        <button onclick="deletestory()">ゲーム終了</button>
     </div>
+    <script>
+        // 物語のデコードと表示
+        var resultsElement = document.getElementById('results');
+        var encodedStory = resultsElement.innerHTML;
+        var decodedStory = atob(encodedStory);
+        var div = document.createElement('div');
+        div.innerHTML = decodedStory;
+        resultsElement.innerHTML = div.textContent || div.innerText;
+    </script>
 </body>
 
 </html>
