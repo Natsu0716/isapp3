@@ -125,7 +125,7 @@
         }
 
         async function saveStory() {
-            var confirmResult = confirm("本当によろしいですか？");
+            var confirmResult = confirm("物語を保存しますか？");
             if (confirmResult) {
                 var storyList = document.getElementById('results').getElementsByTagName('li');
                 var story = "";
@@ -153,26 +153,32 @@
             } 
          }
 
-        function deletestory() {
-            var confirmResult = confirm("本当によろしいですか？");
-            if (confirmResult) {
-                var sqlDeletePGame = `DELETE FROM PGame WHERE title = '${title}';`;
-                var sqlDeleteTitles = `DELETE FROM Titles WHERE title = '${title}';`;
+         function deletestory() {
+    var confirmResult = confirm("本当によろしいですか？");
+    if (confirmResult) {
+        var sqlDeletePGame = `DELETE FROM PGame WHERE title = '${title}';`;
+        var sqlDeleteTitles = `DELETE FROM Titles WHERE title = '${title}';`;
+        var sqlDeleteUsers = `DELETE FROM Users WHERE title = '${title}';`; // 追加
 
-                osql.connect(sqlDeletePGame).then(function () {
-                    osql.connect(sqlDeleteTitles).then(function () {
-                        alert("めでたしめでたし？");
-                        window.location.href = "robby.html";
-                    }).catch(function (error) {
-                        console.log(error);
-                        alert("タイトルの削除中にエラーが発生しました");
-                    });
+        osql.connect(sqlDeletePGame).then(function () {
+            osql.connect(sqlDeleteTitles).then(function () {
+                osql.connect(sqlDeleteUsers).then(function () { // 追加
+                    alert("めでたしめでたし？");
+                    window.location.href = "robby.html";
                 }).catch(function (error) {
                     console.log(error);
-                    alert("物語の削除中にエラーが発生しました");
+                    alert("ユーザーの削除中にエラーが発生しました"); // 追加
                 });
-            }
-        }
+            }).catch(function (error) {
+                console.log(error);
+                alert("タイトルの削除中にエラーが発生しました");
+            });
+        }).catch(function (error) {
+            console.log(error);
+            alert("物語の削除中にエラーが発生しました");
+        });
+    }
+}
     </script>
 </head>
 
