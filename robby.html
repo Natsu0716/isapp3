@@ -130,7 +130,7 @@
     async function buttonPressed() {
       var roomName = document.getElementById('tf').value;
       if (roomName.trim() === "") {
-        alert("ルーム名を入力してください");
+        alert("タイトルを入力してください");
         return;
       }
       createRoom(roomName);
@@ -140,7 +140,7 @@
       var sql = `INSERT INTO Titles (title) VALUES ('${roomName}');`;
       try {
         await osql.connectInsert(sql);
-        alert("ルーム名がデータベースに挿入されました");
+        alert("新しい物語が追加されました");
         refreshTitles();
       } catch (error) {
         console.log(error);
@@ -226,7 +226,7 @@
   </script>
 </head>
 <body>
-  <h1>ルーム選択</h1>
+  <h1>タイトル選択</h1>
   <hr>
   <div style="text-align: right;">
     ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
@@ -234,12 +234,12 @@
   </div>
   <div class="center">
     <div class="form-container">
-      <h2>ルームを作成する</h2>
+      <h2>タイトルを作成する</h2>
       <input id="tf" type="text" placeholder="ルーム名">
       <button onclick="buttonPressed()">作成</button>
     </div>
     <div class="form-container">
-      <h2>ルームを選択する</h2>
+      <h2>タイトルを選択する</h2>
       <input id="tf7" type="text" placeholder="タイトル">
       <button onclick="button7Pressed()">選択</button>
     </div>
