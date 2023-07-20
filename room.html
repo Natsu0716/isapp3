@@ -7,6 +7,7 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
 
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -142,7 +143,7 @@
             border: 1px solid #ccc;
         }
     </style>
-
+    
     <script>
         osql.requireLogin();
 
@@ -287,17 +288,26 @@
     <br>
     15個のストーリーで完結させよう！ プレイヤー表の上から順番に回答してね！
     <div style="text-align: right;">
-        ようこそ さん
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
     </div>
     <hr>
-    <h3>ストーリー</h3>
     次の1文:<input id="tf1" type="text">
     <button onclick="button1Pressed()">回答</button>
     <p id="result0"></p>
-    <div id="comments"></div>
+    <br>
+    <br>
+
     <hr>
-    <h3>プレイヤー表</h3>
+    
+    <div>
+  
+    </div>
+    <div id="comments"></div>
+
+    
+    <hr>
+    <h3>ユーザー名一覧</h3>
     <div id="usernames"></div>
 
 </body>
