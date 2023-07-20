@@ -276,7 +276,7 @@
         }
 
         function showResults() {
-            var url = `answers.html?title=${encodeURIComponent(title || "")}`;
+            var url = `answers.html?title=${encodeURIComponent(title || "")}&Username=${encodeURIComponent(username || "")}`;
             window.location.href = url;
         }
     </script>
@@ -286,7 +286,7 @@
     <h1><span id="roomname"></span></h1>
     前の人に続いてストーリーを考えよう！
     <br>
-    15個のストーリーで完結させよう！ プレイヤー表の上から順番に回答してね！
+    15.16個のストーリーで完結させよう！ プレイヤー表の上から順番に回答してね！
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>

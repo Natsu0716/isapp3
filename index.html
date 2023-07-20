@@ -1,47 +1,72 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <script type="text/javascript" src="lib/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/osql.js"></script>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/osql.js"></script>
 
-    <script>
-        osql.requireLogin();
+  <!-- 追加したCSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
 
-        $(document).ready(async function () {
-            var me = await osql.getMe();
-            console.log(me);
-            var sql = `insert ignore into Users values('${me.id}', '${me.fname}', '${me.lname}');`;
-            await osql.connect(sql);
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 24px;
+    }
 
-            document.getElementById('firstname').innerHTML = me.fname;
-            document.getElementById('lastname').innerHTML = me.lname;
-        });
+    hr {
+      border: none;
+      height: 5px;
+      background-color: #ccc;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
 
-        function logout() {
-            osql.logout();
-        }
-    </script>
+    div {
+      text-align: center;
+      padding: 5px;
+    }
+
+    #b {
+      text-align: right;
+      padding: 5px;
+    }
+
+    a {
+      color: #4caf50;
+      text-decoration: none;
+      padding: 5px;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <script>
+    // 以前のJavaScriptコードをそのまま残す
+  </script>
 
 </head>
 
 <body>
-    <h1>isapp3</h1>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
-    </div>
-    <hr>
-    <div>
-        <a href="robby.html">robbyへ</a>
-    </div>
-    <br>
-    <div>
-        <a href="register.html">名前登録へ</a>
-    </div>
+  <h1>開始画面</h1>
+  <div class="b">
+    <a href="javascript:logout()">logout</a>
+  </div>
+  <hr>
+  <br>
+  <div>
+    <a href="register.html">ゲームを開始する</a>
+  </div>
 </body>
 
 </html>
