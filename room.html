@@ -168,6 +168,7 @@
             setInterval(button2Pressed, 1000); // 追加
 
             initializePage();
+            setInterval(checkStoryCount, 5000);
         });
 
         async function initializePage() {
@@ -229,6 +230,25 @@
             html = html + '</table>';
             document.getElementById('comments').innerHTML = html;
         }
+
+        async function checkStoryCount() {
+        var sqlCount = `select count(*) as count from PGame where title = '${title || ""}';`;
+        try {
+            var results = await osql.connect(sqlCount);
+            var count = results[0].count;
+            if (count > 14) {
+                redirectToAnswers();
+            }
+        } catch (error) {
+            console.log(error);
+            alert("データの取得中にエラーが発生しました");
+        }
+    }
+
+    function redirectToAnswers() {
+        var url = `answers.html?title=${encodeURIComponent(title || "")}&Username=${encodeURIComponent(username || "")}`;
+        window.location.href = url;
+    }
 
         function button1Pressed() {
             var story = document.getElementById('tf1').value;
